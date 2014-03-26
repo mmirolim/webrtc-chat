@@ -1,0 +1,19 @@
+.old-messages {
+    max-height: 12em;
+    overflow: auto;
+}
+.timestamp {
+    font-size: 0.6em;
+    text-align: right;
+    margin-bottom: 1em;
+    display: inline-block;
+}
+.msg-body {
+    border: 1px solid rgb(231, 231, 231);
+    border-radius: 4px;
+    padding: 1em;
+    width: 100%;
+    display: inherit;
+    color: #6B6B6B;
+}
+
