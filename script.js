@@ -3,6 +3,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 
 // namespace Chat
 var Chat = {
+    peer: {},
     // TODO use only tasix TURN servers
     stunConfig: [
         {url:'stun:stun01.sipphone.com'},
@@ -55,19 +56,19 @@ var Chat = {
     },
     createRoom: function(id) {
         // creates peer with room id
-        this.peer = new Peer(id, this.config);
+        this.peer = new Peer(id, this.peerConfig);
     },
     createPeer: function() {
         this.peer = new Peer(this.peerConfig);
     },
     startConnection: function(peerId) {
-    // Add label to identify yourself 
+    // Add label to identify users
         var conn = this.peer.connect(peerId, { label: this.peer.id });
         this.registerConnectionEvents(conn);
     },
     receiveConnection: function() {
         this.peer.on('connection', function(conn) {
-            this.registerConnectionEvents(conn)
+            this.registerConnectionEvents(conn);
         });
     },
     registerConnectionEvents: function(conn) {    
@@ -76,7 +77,7 @@ var Chat = {
             console.log('Connection is Open');
         });
         conn.on('close', function() {
-            console.log('Connection is Closed')
+            console.log('Connection is Closed');
         });
         // Receive messages
         conn.on('data', function(data) {
