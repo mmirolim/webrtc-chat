@@ -1,6 +1,8 @@
 <!DOCTYPE html>
     <html>
         <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
             <title>Simple P2P Chat</title>
             <link rel="stylesheet" type="text/css" href="css/foundation.min.css">
             <link rel="stylesheet" type="text/css" href="style.css">
@@ -10,23 +12,26 @@
             <script src="script.js"></script>
         </head>
         <body>
-        <div id="main-wrapper" class="large-6 column large-centered">
-            <h2>Simple P2P Chat</h2>
-            <label for="room">Room name</label>
-            <input type="text" id="room" name="room" />
-            <button id="start" class="small" title="Create a new room">Start</button>
-            <button id="enter" class="small" title="Enter to an existing room">Enter</button>
-            <button id="video-call" class="small" title="Make video call">Video call</button>
-            <h2 id="current-room"></h2>
-            <video id="their-video" autoplay></video>
-            <video id="my-video" autoplay></video>
-            <div id="old-messages"></div>
-            <div id="received-data">Here will be received data</div>
-            <!--<label for="text-to-send">Type text to send</label>
-            <input type="checkbox" id="dynamic-text" name="dynamic-text"/>
-            //-->
-            <input type="text" id="text-to-send" name="text-to-send" />
-            <button id="send" class="small">Send</button>
-        </div>
+            <div id="outer-wrapper" class="row">
+                <div id="document" class="large-12 column large-centered">
+                    <h2>Simple P2P Chat</h2>
+                    <label for="room">Room name</label>
+                    <input type="textarea" id="room" name="room" />
+                    <button id="start" class="small" title="Create a new room">Start</button>
+                    <button id="enter" class="small" title="Enter to an existing room">Enter</button>
+                    <button id="video-call" class="small" title="Make video call">Video call</button>
+                    <div id="system-messages"></div>
+                    <h2 id="current-room"></h2>
+                    <video id="their-video" autoplay></video>
+                    <video id="my-video" autoplay></video>
+                    <div id="old-messages"></div>
+                    <div id="received-data">Here will be received data</div>
+                    <!--<label for="text-to-send">Type text to send</label>
+                    <input type="checkbox" id="dynamic-text" name="dynamic-text"/>
+                    //-->
+                    <input type="textarea" id="text-to-send" name="text-to-send" />
+                    <button id="send" class="small">Send</button>
+                </div>
+            </div>
         </body>
     </html>
