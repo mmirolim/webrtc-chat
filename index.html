@@ -22,10 +22,11 @@
                     <button id="video-call" class="small" title="Make video call">Video call</button>
                     <div id="system-messages"></div>
                     <h2 id="current-room"></h2>
-                    <video id="their-video" autoplay></video>
-                    <video id="my-video" autoplay></video>
+                    <div id="wrapper-video" class="row">
+                        <video id="their-video" class="large-9 columns" autoplay></video>
+                        <video id="my-video" class="large-3 columns" autoplay></video>
+                    </div>
                     <div id="old-messages"></div>
-                    <div id="received-data">Here will be received data</div>
                     <!--<label for="text-to-send">Type text to send</label>
                     <input type="checkbox" id="dynamic-text" name="dynamic-text"/>
                     //-->

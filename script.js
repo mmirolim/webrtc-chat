@@ -4,8 +4,15 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 // namespace Chat
 var Chat = {
     peer: {},
+    conn: {},
     // TODO use only tasix TURN servers
-    stunConfig: [
+    peerConfig: { 
+        host: '192.168.1.101', 
+        port: '9001', 
+        debug: 3, 
+        config: {
+            'iceServers' : 
+            [
         {url:'stun:stun01.sipphone.com'},
         {url:'stun:stun.ekiga.net'},
         {url:'stun:stun.fwdnet.net'},
@@ -24,8 +31,9 @@ var Chat = {
         {url:'stun:stun.voipbuster.com'},
         {url:'stun:stun.voipstunt.com'},
         {url:'stun:stun.voxgratia.org'},
-        {url:'stun:stun.xten.com'}],        
-    peerConfig: { host: '127.0.0.1', port: '9001', debug: 3, config: {'iceServers' : this.stunConfig} },
+        {url:'stun:stun.xten.com'}]      
+        } 
+    },
     error: function (str, err) {
         console.log(str, err);
     },
@@ -63,12 +71,13 @@ var Chat = {
     },
     startConnection: function(peerId) {
     // Add label to identify users
-        var conn = this.peer.connect(peerId, { label: this.peer.id });
-        this.registerConnectionEvents(conn);
+        this.conn = this.peer.connect(peerId, { label: this.peer.id });
+        this.registerConnectionEvents(this.conn);
     },
     receiveConnection: function() {
         this.peer.on('connection', function(conn) {
-            this.registerConnectionEvents(conn);
+            Chat.conn = conn;
+            Chat.registerConnectionEvents(conn);
         });
     },
     registerConnectionEvents: function(conn) {    
@@ -81,7 +90,7 @@ var Chat = {
         });
         // Receive messages
         conn.on('data', function(data) {
-            this.renderMsg(this.conn.label, data);
+            Chat.renderMsg(Chat.conn.label, data);
         });
         conn.on('error', function(err) {
             alert(err);
@@ -92,6 +101,33 @@ var Chat = {
         this.conn.send(str);
         this.renderMsg('You', str);
     },
+    videoCall: function(peerId, yourVideoId, theirVideoId) {
+        navigator.getUserMedia({video: true, audio: false}, function(stream) {
+            var call = Chat.peer.call(peerId, stream);
+            document.getElementById(yourVideoId).src = window.URL.createObjectURL(stream);
+            call.on('stream', function(remoteStream) {
+                // Show stream in some video/canvas element.
+                document.getElementById(theirVideoId).src = window.URL.createObjectURL(remoteStream);
+                console.log(window.URL.createObjectURL(remoteStream));
+            });
+        }, function(err) {
+            console.log('Failed to get local stream' ,err);
+        });
+    },
+    videoAnswer: function(yourVideoId, theirVideoId) {
+        this.peer.on('call', function(call) {
+            navigator.getUserMedia({video: true, audio: false}, function(stream) {
+                call.answer(stream); // Answer the call with an A/V stream.
+                document.getElementById(yourVideoId).src = window.URL.createObjectURL(stream);
+                call.on('stream', function(remoteStream) {
+                    // Show stream in some video/canvas element.
+                    document.getElementById(theirVideoId).src = window.URL.createObjectURL(remoteStream);
+                });
+            }, function(err) {
+                console.log('Failed to get local stream' ,err);
+            });
+        });
+    },
 
 };
 
@@ -101,13 +137,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementById('start').addEventListener('click', function() {
         Chat.createRoom(document.getElementById('room').value);
         Chat.receiveConnection();
+        Chat.videoAnswer('my-video', 'their-video');
     });
     document.getElementById('enter').addEventListener('click', function() {
         Chat.createPeer();
         Chat.startConnection(document.getElementById('room').value);
+        Chat.videoAnswer('my-video', 'their-video');
     });
     document.getElementById('send').addEventListener('click', function() {
         Chat.sendMessage(document.getElementById('text-to-send').value);
+        document.getElementById('text-to-send').value = '';
+    });
+    document.getElementById('video-call').addEventListener('click', function() {
+        Chat.videoCall(document.getElementById('room').value, 'my-video', 'their-video');
     });
 });
 
